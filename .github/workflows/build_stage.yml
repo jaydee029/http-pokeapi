@@ -1,0 +1,26 @@
+name: Build Keploy Binary
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build binary
+        run: go build -tags=viper_bind_struct -cover -o keployB
+
+      - name: Upload Keploy Binary as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: keploy-binary
+          path: keployB 
+
+  test-go-http:
+    needs: build
+    uses: ./.github/workflows/test-http-pokeapi.yml 
+
+#https://github.com/marketplace/actions/delete-artifact
